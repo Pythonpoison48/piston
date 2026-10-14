@@ -1,0 +1,5 @@
+{
+    "language": "haskell",
+    "version": "9.14.1",
+    "aliases": ["haskell", "hs"]
+}
