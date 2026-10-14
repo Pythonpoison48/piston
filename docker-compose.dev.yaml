@@ -16,6 +16,6 @@ services:
     repo: # Local testing of packages
         build: repo
         container_name: piston_repo
-        command: ['--no-build'] # Don't build anything
+        command: [] # Don't build anything
         volumes:
             - .:/piston
