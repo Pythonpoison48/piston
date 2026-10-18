@@ -1,11 +1,11 @@
 #!/usr/bin/env sh
 # Vérifie que les commits d'une MR respectent Conventional Commits.
 #           Usage:
-#            ./check-commit.sh <=> ./check-commit.sh HEAD origin/main
+#            ./check-commit.sh <=> ./check-commit.sh HEAD origin/master
 #            ./check-commit.sh <base> <head>
 set -eu
 
-base="${1:-${CI_MERGE_REQUEST_DIFF_BASE_SHA:-$(git merge-base origin/main HEAD)}}"
+base="${1:-${CI_MERGE_REQUEST_DIFF_BASE_SHA:-$(git merge-base origin/master HEAD)}}"
 head="${2:-${CI_COMMIT_SHA:-HEAD}}"
 
 
