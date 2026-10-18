@@ -15,7 +15,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN dpkg-reconfigure -p critical dash
 RUN apt-get update && \
     apt-get install -y libxml2 gnupg tar coreutils util-linux libc6-dev \
-    binutils build-essential locales libpcre2-dev libevent-dev libgmp-dev \
+    libicu76 binutils build-essential locales libpcre2-dev libevent-dev libgmp-dev \
     libncurses6 libedit-dev libseccomp-dev rename procps python3 \
     libreadline-dev libblas-dev liblapack-dev libarpack2-dev libfftw3-dev \
     libglpk-dev libqhull-dev libqrupdate-dev libsuitesparse-dev \
