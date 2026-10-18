@@ -1,0 +1,5 @@
+{
+    "language": "racket",
+    "version": "9.3.0",
+    "aliases": ["rkt"]
+}
