@@ -1,0 +1,90 @@
+#include:
+#   - remote: "https://gitlab.com/yesolutions/gitlab-ci-templates/raw/main/templates/pre-commit-autofix.yaml" # utilisé pour autofix les commit via ci
+
+variables:
+  TAG: /^v\d+\.\d+\.\d+$/
+
+workflow:
+  auto_cancel:
+    on_new_commit: interruptible
+  rules:
+    - if: $CI_COMMIT_TAG =~ $TAG
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+
+default:
+  interruptible: true
+
+stages:
+  - lint
+  - build
+  - release
+
+
+.mr-only:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+
+.tag-only:
+  rules:
+    - if: $CI_COMMIT_TAG =~ $TAG
+
+lint-commits:
+  stage: lint
+  extends: .mr-only
+  image: python:3.13-alpine
+  variables:
+    GIT_DEPTH: 0
+    CONVENTIONAL_PRE_COMMIT_VERSION: "4.4.0"
+    PIP_DISABLE_PIP_VERSION_CHECK: "1"
+    PIP_ROOT_USER_ACTION: ignore
+  before_script:
+    - apk add --no-cache git
+    - pip install --quiet "conventional-pre-commit==${CONVENTIONAL_PRE_COMMIT_VERSION}"
+  script:
+    - ./check-commit.sh
+
+release-images:
+  extends: .tag-only
+  interruptible: false
+  stage: build
+  image: quay.io/buildah/stable:v1.43.4
+  variables:
+    STORAGE_DRIVER: "vfs"
+    BUILDAH_ISOLATION: "chroot"
+  script:
+    - buildah bud --file api/Dockerfile --tag "$CI_REGISTRY_IMAGE:$CI_COMMIT_TAG" api
+    - printf '%s' "$CI_REGISTRY_PASSWORD" | buildah login -u "$CI_REGISTRY_USER" --password-stdin "$CI_REGISTRY"
+    - buildah tag "$CI_REGISTRY_IMAGE:$CI_COMMIT_TAG" "$CI_REGISTRY_IMAGE:latest"
+    - buildah push "$CI_REGISTRY_IMAGE:$CI_COMMIT_TAG"
+    - buildah push "$CI_REGISTRY_IMAGE:latest"
+
+
+create-release:
+  needs:
+    - changelog
+  extends: .tag-only
+  stage: release
+  image: gitlab/glab:v1.123.0
+  variables:
+    GLAB_ENABLE_CI_AUTOLOGIN: true
+  script:
+    - glab auth login --token "$RELEASE_TOKEN"
+    - glab release create "$CI_COMMIT_TAG" --notes-file CHANGELOG.md
+
+changelog:
+  extends: .tag-only
+  stage: release
+  interruptible: false
+  image:
+    name: orhunp/git-cliff:2.14.2
+    entrypoint: [""]
+  variables:
+    GITLAB_TOKEN: $RELEASE_TOKEN
+    GITLAB_API_URL: $CI_API_V4_URL
+    GIT_STRATEGY: clone # clone entire repo instead of reusing workspace
+    GIT_DEPTH: 0 # avoid shallow clone to give cliff all the info it needs
+  script:
+    - git-cliff --latest --gitlab-repo "$CI_PROJECT_PATH"  -r . > CHANGELOG.md
+  artifacts:
+    paths:
+      - CHANGELOG.md
