@@ -1,0 +1,10 @@
+{
+    "language": "gawk",
+    "version": "5.4.1",
+    "provides": [
+        {
+            "language": "awk",
+            "aliases": ["gawk"]
+        }
+    ]
+}
