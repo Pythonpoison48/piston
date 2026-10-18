@@ -31,7 +31,7 @@ stages:
 lint-commits:
   stage: lint
   extends: .mr-only
-  image: python:3.13-alpine
+  image: docker.io/library/python:3.13-alpine
   variables:
     GIT_DEPTH: 0
     CONVENTIONAL_PRE_COMMIT_VERSION: "4.4.0"
@@ -64,7 +64,7 @@ create-release:
     - changelog
   extends: .tag-only
   stage: release
-  image: gitlab/glab:v1.123.0
+  image: docker.io/gitlab/glab:v1.123.0
   variables:
     GLAB_ENABLE_CI_AUTOLOGIN: true
   script:
@@ -76,7 +76,7 @@ changelog:
   stage: release
   interruptible: false
   image:
-    name: orhunp/git-cliff:2.14.2
+    name: docker.io/orhunp/git-cliff:2.14.2
     entrypoint: [""]
   variables:
     GITLAB_TOKEN: $RELEASE_TOKEN

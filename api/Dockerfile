@@ -1,4 +1,4 @@
-FROM buildpack-deps:trixie AS isolate
+FROM docker.io/library/buildpack-deps:trixie AS isolate
 RUN apt-get update && \
     apt-get install -y --no-install-recommends git libcap-dev && \
     rm -rf /var/lib/apt/lists/* && \
@@ -8,7 +8,7 @@ RUN apt-get update && \
     make -j$(nproc) install && \
     rm -rf /tmp/*
 
-FROM node:26.11.1-trixie-slim
+FROM docker.io/library/node:26.11.1-trixie-slim
 
 ENV DEBIAN_FRONTEND=noninteractive
 
