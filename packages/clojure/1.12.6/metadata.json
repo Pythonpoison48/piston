@@ -1,0 +1,5 @@
+{
+    "language": "clojure",
+    "version": "1.12.6",
+    "aliases": ["clojure", "clj"]
+}
