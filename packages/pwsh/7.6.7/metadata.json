@@ -1,0 +1,10 @@
+{
+    "language": "pwsh",
+    "version": "7.6.7",
+    "provides": [
+        {
+            "language": "powershell",
+            "aliases": ["ps", "pwsh", "ps1"]
+        }
+    ]
+}

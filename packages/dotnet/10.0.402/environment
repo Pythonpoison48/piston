@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+# Put 'export' statements here for environment variables
+export DOTNET_ROOT=$PWD
+export PATH=$DOTNET_ROOT:$PATH
+export FSI_PATH=$(find $(pwd) -name fsi.dll)
+# isolate's seccomp policy is incompatible with .NET's W^X feature
+export DOTNET_EnableWriteXorExecute=0
+export DOTNET_NOLOGO=1
+export DOTNET_CLI_TELEMETRY_OPTOUT=1
+export DOTNET_SKIP_WORKLOAD_INTEGRITY_CHECK=1

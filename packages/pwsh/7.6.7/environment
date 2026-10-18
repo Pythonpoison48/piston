@@ -1,0 +1,3 @@
+export PATH=$PWD:$PATH
+# isolate's seccomp policy is incompatible with .NET's W^X feature
+export DOTNET_EnableWriteXorExecute=0
