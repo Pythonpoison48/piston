@@ -1,0 +1,9 @@
+{
+    "language": "crystal",
+    "version": "1.22.0",
+    "aliases": ["crystal", "cr"],
+    "limit_overrides": {
+        "compile_timeout": 60000,
+        "compile_cpu_time": 60000
+    }
+}
