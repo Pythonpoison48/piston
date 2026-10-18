@@ -1,0 +1,6 @@
+{
+    "language": "erlang",
+    "version": "29.1.2",
+    "aliases": ["erlang", "erl", "escript"],
+    "limit_overrides": { "max_file_size": 100000000 }
+}
